@@ -37,11 +37,28 @@
             // Fetch categories from the server using Axios
             // and display them in the select element
             // url: http://localhost:3010/categories
+            axios.get("/categories")
+            .then(response=>{
+                const categories = response.data;
+                showCategories(categories)
+            })
+            .catch(error=>{
+                console.log(error.message)
+            })
 
         }
 
         function showCategories(categories) {
             // Display the categories in the select element
+            const select_element = document.getElementById("selectCategory");
+                for (i=0; i<categories.length;i++) {
+                    const category = categories[i];
+                    const option_element = document.createElement("option");
+                    option_element.value = category;
+                    option_element.textContent = category;
+                    select_element.appendChild(option_element);
+                }
+            
             
         }
 
@@ -51,6 +68,34 @@
             // If "All" is chosen, fetch all items
             // If a specific category is chosen, fetch items for that category
             // url: http://localhost:3010/items?category=categoryName
+            axios.get("/items")
+            .then(response=>{
+                const allItems = response.data;
+                const select_element = document.getElementById("selectCategory");
+                const selectedCategory = select_element.value;
+                console.log(selectedCategory);
+                if (selectedCategory === "0") {
+                    return
+                }
+                if (selectedCategory == "all") {
+                    const selectedCategoryItems = allItems;
+                    showItems(selectedCategoryItems);
+                }
+                else {
+                    const selectedCategoryItems = []; // item of interest
+                    for (i=0; i < allItems.length; i++) {
+                        if (allItems[i]["category"] == selectedCategory) {
+                            selectedCategoryItems.push(allItems[i])
+                        }
+                    }
+                    showItems(selectedCategoryItems);
+                }
+                
+                
+            })
+            .catch(error=>{
+                console.log(error.message)
+                })
             
         }
 
@@ -58,7 +103,44 @@
             // Display the items in the itemsList div
             // Each item should be displayed in a bootstrap card format
             // The display should be responsive 3 columns on large screens, 2 columns on medium screens, and 1 column on small screens
-            
+            console.log(items);
+            const paraElement = document.getElementsByClassName("text-center")[2];
+            while (paraElement.firstChild){
+                paraElement.firstChild.remove();
+            }
+            const container_div = document.createElement("div");
+            container_div.className = "container";
+
+            let row_div = document.createElement("div");
+            row_div.className = "row";
+
+            for (i=0; i < items.length; i++) {
+                //create card
+                const itemName = items[i]["name"];
+                const price = items[i]["price"];
+                const card_div = document.createElement("div");
+                card_div.className = "card col-lg-4 col-md-6 col-sm-12";
+                //create card body
+                const card_body_div = document.createElement("div");
+                card_body_div.className = "card-body";
+                //create card title
+                const card_title = document.createElement("h5");
+                card_title.className = "card-title";
+                card_title.textContent = itemName;
+                //create card text
+                const card_text = document.createElement("p")
+                card_text.className = "card-text";
+                card_text.textContent = "Price: " + price;
+                // title and text into body
+                card_body_div.appendChild(card_title);
+                card_body_div.appendChild(card_text);
+                //body into div
+                card_div.appendChild(card_body_div);
+                row_div.appendChild(card_div);
+            }
+
+            container_div.appendChild(row_div);
+            paraElement.appendChild(container_div);
 
         }
 
