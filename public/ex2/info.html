@@ -24,9 +24,82 @@
         </div>
         <script>
             function getData() {
- 
-            }
+        
+                const itemType = document.getElementById("type").value;
+                const limit = document.getElementById("limit").value;
+                
+                axios.get("/data", {
+                            params:{
+                                type: itemType,
+                                limit: limit
+                            }
+                        })
+                .then(response => {
+                    console.log(response.data['records'])
+                    generateTable(response.data)
+                    
+    
 
+                })
+                .catch(error =>{
+                    console.log(error.message)
+                })
+
+            
+            }
+        
+        function generateTable(dataObj) {
+
+            const resultDivElem = document.getElementById("result")
+            while(resultDivElem.firstChild){
+                resultDivElem.firstChild.remove()
+            }
+            const h2Elem = document.createElement("h2");
+            h2Elem.innerText = dataObj["type"] + ":";
+            resultDivElem.appendChild(h2Elem);
+
+            const tableElement = document.createElement("table");
+            tableElement.className = "table";
+
+            //insert table headers
+
+            const theadElement = document.createElement("thead");
+            tableElement.appendChild(theadElement);
+
+            
+
+            const obj_keys = Object.keys(dataObj['records'][0]);
+            const trElement = document.createElement("tr")
+            for (i=0; i < obj_keys.length; i++){
+                const thElement = document.createElement("th")
+                thElement.textContent = obj_keys[i];
+                thElement.scope = "col";
+                trElement.appendChild(thElement);
+            }
+            theadElement.appendChild(trElement);
+
+            // instert table data
+            
+            const tbodyElement = document.createElement("thead");
+            tableElement.appendChild(tbodyElement);
+
+            for (i=0; i < dataObj['records'].length; i++) {
+                const trElement = document.createElement("tr");
+                for (x=0; x < obj_keys.length; x++){
+                    const tdElement = document.createElement("td");
+                    tdElement.textContent = dataObj['records'][i][obj_keys[x]]
+                    tdElement.scope = "col";
+                    trElement.appendChild(tdElement);
+                }
+                tbodyElement.appendChild(trElement);
+            }
+            tableElement.appendChild(tbodyElement);
+
+            resultDivElem.appendChild(tableElement);
+        }
+                    
+                    
+                    
         </script>
 </body>
 </html>
