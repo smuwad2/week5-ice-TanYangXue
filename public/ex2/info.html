@@ -63,25 +63,20 @@
 
             //insert table headers
 
-            const theadElement = document.createElement("thead");
-            tableElement.appendChild(theadElement);
-
-            
-
-            const obj_keys = Object.keys(dataObj['records'][0]);
-            const trElement = document.createElement("tr")
-            for (i=0; i < obj_keys.length; i++){
-                const thElement = document.createElement("th")
-                thElement.textContent = obj_keys[i];
-                thElement.scope = "col";
-                trElement.appendChild(thElement);
-            }
-            theadElement.appendChild(trElement);
-
-            // instert table data
-            
             const tbodyElement = document.createElement("tbody");
             tableElement.appendChild(tbodyElement);
+
+            const obj_keys = Object.keys(dataObj['records'][0]);
+            const headerRow = document.createElement("tr");
+            for (let i=0; i < obj_keys.length; i++) {
+                const thElement = document.createElement("th");
+                thElement.textContent = obj_keys[i];
+                headerRow.appendChild(thElement);
+            }
+            tbodyElement.appendChild(headerRow);
+
+            // instert table data
+
 
             for (i=0; i < dataObj['records'].length; i++) {
                 const trElement = document.createElement("tr");
